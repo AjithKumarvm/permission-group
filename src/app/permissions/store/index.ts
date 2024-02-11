@@ -9,7 +9,8 @@ interface PermissionState {
   groupName: string,
   structures: {
     name: string,
-    role: string
+    role: string,
+    checked: boolean
   }[],
   structuresLoader: boolean,
   roles: string[],
@@ -17,18 +18,24 @@ interface PermissionState {
   users: {
     user: string,
     email: string,
-    organisation: string
+    organisation: string,
+    selected: boolean
   }[],
   usersLoader: boolean,
+  allChecked: boolean,
   getRoles: () => void,
   getStructures: () => void
   setRole: (selectedRole: string, index: number) => void,
   setGroupName: (groupName: string) => void
   getUsers: () => void,
   resetStore: () =>  void
+  setChecked: (isChecked: boolean, selectedIndex: number) => void
+  setAllChecked: (isChecked: boolean) => void,
+  selectMember: (isSelected: boolean, selectedIndex: number) => void
 }
 
 const initialState = {
+  allChecked: false,
   structures: [],
   roles: [],
   structuresLoader: false,
@@ -57,10 +64,10 @@ export const usePermissionStore = create<PermissionState>()(persist(immer(
             set({
               structures: data.map((name: {
                 name: string
-                role: string
               }) => ({
                 name,
-                role: "No access"
+                role: "No access",
+                checked: false
               }))
             })
           } finally {
@@ -82,7 +89,6 @@ export const usePermissionStore = create<PermissionState>()(persist(immer(
           }).finally(() => set({rolesLoader: false}))
         },
         setRole: (selectedRole, selectedIndex) => {
-          console.log('setRole', selectedRole, selectedIndex)
           set({
             structures: get().structures.map((str, index) => ({
               ...str,
@@ -106,7 +112,34 @@ export const usePermissionStore = create<PermissionState>()(persist(immer(
               users: data
             })
           }).finally(() => set({usersLoader: false}))
-        }
+        },
+        setChecked: (isChecked, selectedIndex) => {
+          set({
+            structures: get().structures.map((str, index) => ({
+              ...str,
+              checked: index === selectedIndex ? isChecked: str.checked
+            }))
+          })
+        },
+        setAllChecked: (isChecked) => {
+          set({
+            structures: get().structures.map((str) => ({
+              ...str,
+              checked: isChecked ? false: true
+            }))
+          })
+          set({
+            allChecked: !isChecked
+          })
+        },
+        selectMember: (isSelected, selectedIndex) => {
+          set({
+            users: get().users.map((user, index) => ({
+              ...user,
+              selected: index === selectedIndex ? isSelected: user.selected
+            }))
+          })
+        },
       }),
     {
       name: 'permission',

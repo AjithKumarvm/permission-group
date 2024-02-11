@@ -27,7 +27,7 @@ const GroupName = () => {
     <div className="p-5 pt-0 pb-3 flex flex-row justify-end">
       <Link href="/">
       <button
-        className="text-black bg-transparent hover:bg-blue-200 focus:ring-4 border-gray-300 border focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 mb-2 mr-2">
+        className="text-black bg-transparent dark:text-white hover:bg-blue-200 focus:ring-4 border-gray-300 border focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 mb-2 mr-2">
         Cancel
       </button>
       </Link>

@@ -17,7 +17,9 @@ const Structures = () => {
     getRoles: state.getRoles,
     rolesLoader: state.rolesLoader,
     roles: state.roles,
-    setRole: state.setRole
+    setRole: state.setRole,
+    setChecked: state.setChecked,
+    setAllChecked: state.setAllChecked
   }))
   useEffect(() => {
    !permissionState.structures.length && permissionState.getStructures()
@@ -26,12 +28,12 @@ const Structures = () => {
 
 
   if (permissionState.structuresLoader) {
-    return <div>Loading..</div>
+    return <div className="p-10">Loading..</div>
   }
 
 
   return <div>
-    <Timeline steps={WORKFLOW_STEPS} selected={0} />
+    <Timeline steps={WORKFLOW_STEPS} selected={1} />
     <hr className="my-5" />
     <h3 className="p-5 pt-0 pb-0">Which structures would you like to grant access to?</h3>
     <span className="p-5 pt-0 text-xs pb-5">Access is required to at least one structure</span>
@@ -48,18 +50,18 @@ const Structures = () => {
       <span className="w-32 ml-5 text-xs text-gray-500 text-right">24 structures</span>
     </form>
     <div>
-      <div className="flex flex-row bg-slate-100 border p-5 py-2 items-center justify-between">
+      <div className="flex flex-row bg-slate-100 dark:bg-slate-900 dark:border-black border p-5 py-2 items-center justify-between">
         <div className="flex">
-          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+          <input onChange={(e) => permissionState.setAllChecked(!e.target.checked)} id="default-checkbox" type="checkbox" value="" className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
           <span className="text-xs">Structure</span>
         </div>
         <span className="flex self-center text-xs">Role</span>
       </div>
     </div>
-    {permissionState.structures?.map?.(({name, role}, index) => {
+    {permissionState.structures?.map?.(({name, role, checked}, index) => {
       return <div className="flex flex-row top-0 p-5 py-2 items-center justify-between" key={name}>
         <div className="flex">
-          <input id="default-checkbox" type="checkbox" value="" className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+          <input checked={checked} onChange={(e) => permissionState.setChecked(!checked, index)} id="default-checkbox" type="checkbox" value="" className="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
           <span className="text-xs">{name}</span>
         </div>
         {permissionState.rolesLoader ? '...' : <DropDown options={permissionState.roles} selected={role} onChange={(role) => permissionState.setRole(role, index)} />}
@@ -70,7 +72,7 @@ const Structures = () => {
     <div className="p-5 pt-0 pb-3 flex flex-row justify-end">
       <Link href={PERMISSION_ROUTES.CREATE_PERMISSION}>
         <button
-          className="text-black bg-transparent hover:bg-blue-200 focus:ring-4 border-gray-300 border focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 mb-2 mr-2">
+          className="text-black bg-transparent dark:text-white hover:bg-blue-200 focus:ring-4 border-gray-300 border focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 mb-2 mr-2">
           Go back
         </button>
       </Link>

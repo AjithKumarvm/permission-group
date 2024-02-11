@@ -10,16 +10,17 @@ const Members = () => {
   const permissionState = usePermissionStore(state => ({
     users: state.users,
     usersLoader: state.usersLoader,
-    getUsers: state.getUsers
+    getUsers: state.getUsers,
+    selectMember: state.selectMember
   }))
   useEffect(() => {
     !permissionState.users?.length && permissionState.getUsers()
   }, [])
   if(permissionState.usersLoader) {
-    return <div>Loading..</div>
+    return <div className="p-10">Loading..</div>
   }
   return <div>
-    <Timeline steps={WORKFLOW_STEPS} selected={0} />
+    <Timeline steps={WORKFLOW_STEPS} selected={3} />
     <hr className="my-5" />
     <h3 className="p-5 pt-0 pb-0">Would you like to add anyone to the new group now?</h3>
     <span className="p-5 pt-0 text-xs pb-5">You can skip this and add members later if you wish</span>
@@ -36,7 +37,7 @@ const Members = () => {
       </div>
       <span className="w-32 ml-5 text-xs text-gray-500 text-right">0 members</span>
     </form>
-    {permissionState.users.map((user) => {
+    {permissionState.users.map((user, index) => {
       return <div className="border-b">
       <div className="flex flex-row top-0 p-5 py-2 items-center justify-between">
         <div className="flex flex-col">
@@ -45,7 +46,7 @@ const Members = () => {
         </div>
         <span className="flex self-center text-xs">
           <label className="relative inline-flex items-center mb-5 cursor-pointer">
-            <input type="checkbox" value="" className="sr-only peer" />
+            <input type="checkbox" value="" checked={user.selected} className="sr-only peer" onChange={(e) => permissionState.selectMember(e.target.checked, index)} />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </span>
@@ -57,7 +58,7 @@ const Members = () => {
     <div className="p-5 pt-0 pb-3 flex flex-row justify-end">
       <Link href={PERMISSION_ROUTES.ENTITIES}>
         <button
-          className="text-black bg-transparent hover:bg-blue-200 focus:ring-4 border-gray-300 border focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 mb-2 mr-2">
+          className="text-black bg-transparent dark:text-white hover:bg-blue-200 focus:ring-4 border-gray-300 border focus:ring-blue-300 font-medium rounded-md text-sm px-4 py-2 mb-2 mr-2">
           Go back
         </button>
       </Link>
